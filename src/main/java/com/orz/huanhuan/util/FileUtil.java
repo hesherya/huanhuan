@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -28,10 +29,9 @@ public class FileUtil {
 
     public static void writeToExcel(String uri, List<? extends BaseRowModel> models, Sheet sheet) throws IOException {
         try (OutputStream out = new FileOutputStream(uri)) {
-            ExcelWriter writer = EasyExcelFactory.getWriter(out);
+            ExcelWriter writer = EasyExcelFactory.getWriter(out, ExcelTypeEnum.XLS, true);
             writer.write(models, sheet);
             writer.finish();
-
         }
     }
 }

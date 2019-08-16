@@ -34,7 +34,7 @@ public class CmdRunner implements CommandLineRunner {
 
         String invoiceOrderFilePath = "./invoice_"
                 + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"))
-                + ".xlsx";
+                + ".xls";
         if (args.length > LEAST_ARGS_NUMBER) {
             invoiceOrderFilePath = args[2];
         }

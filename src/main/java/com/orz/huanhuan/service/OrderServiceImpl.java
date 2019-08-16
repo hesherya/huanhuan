@@ -125,6 +125,7 @@ public class OrderServiceImpl implements OrderService {
                                 .map(od -> (AliOrder) od)
                                 .filter(aliOrder -> aliOrder.getConsignee().equalsIgnoreCase(order.getConsignee())
                                         && aliOrder.getMobilePhone().equalsIgnoreCase(order.getMobilePhone())
+                                        && aliOrder.getCount().equals(order.getCount())
                                         && (((order.getProvince() + STRING_SINGLE_SPACE
                                         + order.getCity() + STRING_SINGLE_SPACE
                                         + order.getCounty() + STRING_SINGLE_SPACE

@@ -15,8 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public class HuanhuanApplicationTests {
 
-    private static final String HUAN_ORDER_PATH = "/Users/hesher/Downloads/【2019814】订单.xls";
-    private static final String ALI_ORDER_PATH = "/Users/hesher/Downloads/1565768937997_828966574.xls";
+    private static final String HUAN_ORDER_PATH = "/Users/hesher/Downloads/【2019816】订单.xls";
+    private static final String ALI_ORDER_PATH = "/Users/hesher/Downloads/1565944172897_828966574.xls";
     private static final String INVOICE_PATH = "/Users/hesher/Downloads/sample_output.xls";
     @Autowired
     private OrderService orderService;
