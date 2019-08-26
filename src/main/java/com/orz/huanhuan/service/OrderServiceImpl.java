@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static final String STRING_SINGLE_SPACE = " ";
     private static final int ADDRESS_INDEX = 3;
+    public static final String LINE_SEPARATOR = "\r\n";
     private final OrderRepository huanhuanOrderRepository;
     private final OrderRepository aliOrderRepository;
     private final OrderRepository invoiceRepository;
@@ -76,16 +74,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Map<String, AliOrder> convertAliOrdersToMap(List<Object> aliOrders) {
-        return Objects.requireNonNull(aliOrders)
+        Map<String, AliOrder> aliOrderMap = Objects.requireNonNull(aliOrders)
                 .stream()
-                .filter(o -> StringUtils.isNotBlank(((AliOrder) o).getComment()))
-                .collect(Collectors.toMap(order -> ((AliOrder) order).getComment(),
-                        o -> (AliOrder) o,
+                .map(o -> (AliOrder) o)
+                .filter(o -> StringUtils.isNotBlank(o.getComment()))
+                .collect(Collectors.toMap(AliOrder::getComment,
+                        o -> o,
                         (k1, k2) -> {
                             k1.setCount(Integer.toString(Integer.valueOf(k1.getCount()) + Integer.valueOf(k2.getCount())));
                             k1.setComment(k1.getComment() + "," + k2.getComment());
                             return k1;
                         }));
+        List<String> toBeRemovedKey = new ArrayList<>(aliOrderMap.size());
+        Map<String, AliOrder> toBeAddMap = new HashMap<>(aliOrderMap.size());
+        aliOrderMap.forEach((key, value) -> {
+            if (key.contains(LINE_SEPARATOR)) {
+                for (String order : key.split(LINE_SEPARATOR)) {
+                    toBeAddMap.put(order, value);
+                }
+                toBeRemovedKey.add(key);
+            }
+        });
+
+        toBeRemovedKey.forEach(aliOrderMap::remove);
+        aliOrderMap.putAll(toBeAddMap);
+        return aliOrderMap;
     }
 
     private List<Invoice> getInvoices(List<Object> huanhuanOrders,
@@ -140,6 +153,17 @@ public class OrderServiceImpl implements OrderService {
                                 .forEach(invoices::add);
                     }
                 });
+
+        long ordersToBeMatched = huanhuanOrders.stream().filter(o -> {
+            HuanhuanOrder order = (HuanhuanOrder) o;
+            return StringUtils.isBlank(order.getLogisticOrderNo()) &&
+                    (order.getStatus().contains(HuanhuanOrderStatus.WAIT_TO_SHIP.getDesc())
+                            || order.getStatus().contains(HuanhuanOrderStatus.SHIPPING.getDesc()));
+        }).count();
+
+        if (invoices.size() < ordersToBeMatched) {
+            log.warn("[{}] huanhuan orders were filtered.", ordersToBeMatched - invoices.size());
+        }
     }
 
     private void doChecking(List<Invoice> invoices, HuanhuanOrder order, AliOrder aliOrder) {
