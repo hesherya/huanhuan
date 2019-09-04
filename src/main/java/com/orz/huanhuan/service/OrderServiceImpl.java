@@ -136,6 +136,7 @@ public class OrderServiceImpl implements OrderService {
                                 // 多单合并发货的情况，保留第一行数据即可，运单号一致。
                                 .filter(od -> StringUtils.isNotBlank(((AliOrder) od).getConsignee()))
                                 .map(od -> (AliOrder) od)
+                                .peek(od -> od.setConsignee(od.getConsignee().trim()))
                                 .filter(aliOrder -> aliOrder.getConsignee().equalsIgnoreCase(order.getConsignee())
                                         && aliOrder.getMobilePhone().equalsIgnoreCase(order.getMobilePhone())
                                         && aliOrder.getCount().equals(order.getCount())
@@ -175,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // Checking consignee.
-        if (!order.getConsignee().equalsIgnoreCase(aliOrder.getConsignee())) {
+        if (!order.getConsignee().trim().equalsIgnoreCase(aliOrder.getConsignee())) {
             log.warn("[{}]'s consignee [{}] is different from alibaba order's [{}].",
                     order.getOrderNo(), order.getConsignee(), aliOrder.getConsignee());
             throw new IllegalArgumentException("Consignee is different.");
