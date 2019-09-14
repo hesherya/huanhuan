@@ -25,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private static final String STRING_SINGLE_SPACE = " ";
     private static final int ADDRESS_INDEX = 3;
     public static final String LINE_SEPARATOR = "\r\n";
+    public static final String REGEX_SPACES = "\\s+";
     private final OrderRepository huanhuanOrderRepository;
     private final OrderRepository aliOrderRepository;
     private final OrderRepository invoiceRepository;
@@ -89,9 +90,15 @@ public class OrderServiceImpl implements OrderService {
         Map<String, AliOrder> toBeAddMap = new HashMap<>(aliOrderMap.size());
         aliOrderMap.forEach((key, value) -> {
             if (key.contains(LINE_SEPARATOR)) {
-                for (String order : key.split(LINE_SEPARATOR)) {
-                    toBeAddMap.put(order, value);
-                }
+                Arrays.stream(key.split(LINE_SEPARATOR))
+                        .forEach(order -> toBeAddMap.put(order, value));
+                toBeRemovedKey.add(key);
+            }
+
+            String[] ordersInSameLine = key.split(REGEX_SPACES);
+            if (ordersInSameLine.length > 1) {
+                Arrays.stream(ordersInSameLine)
+                        .forEach(order -> toBeAddMap.put(order, value));
                 toBeRemovedKey.add(key);
             }
         });
