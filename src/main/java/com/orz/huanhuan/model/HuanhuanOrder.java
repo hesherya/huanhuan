@@ -19,22 +19,22 @@ public class HuanhuanOrder extends BaseRowModel {
     private String token;
     @ExcelProperty(index = 8)
     private String count;
-    @ExcelProperty(index = 10)
+    @ExcelProperty(index = 11)
     private String consignee;
-    @ExcelProperty(index = 17)
+    @ExcelProperty(index = 18)
     private String mobilePhone;
-    @ExcelProperty(index = 12)
-    private String province;
     @ExcelProperty(index = 13)
-    private String city;
+    private String province;
     @ExcelProperty(index = 14)
-    private String county;
+    private String city;
     @ExcelProperty(index = 15)
+    private String county;
+    @ExcelProperty(index = 16)
     private String address;
     @ExcelProperty(index = 1)
     private String productName;
-    @ExcelProperty(index = 23)
+    @ExcelProperty(index = 24)
     private String status;
-    @ExcelProperty(index = 19)
+    @ExcelProperty(index = 20)
     private String logisticOrderNo;
 }
