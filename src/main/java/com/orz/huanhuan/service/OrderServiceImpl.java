@@ -24,8 +24,8 @@ public class OrderServiceImpl implements OrderService {
 
     private static final String STRING_SINGLE_SPACE = " ";
     private static final int ADDRESS_INDEX = 3;
-    public static final String LINE_SEPARATOR = "\r\n";
-    public static final String REGEX_SPACES = "\\s+";
+    private static final String LINE_SEPARATOR = "\r\n";
+    private static final String REGEX_SPACES = "\\s+";
     private final OrderRepository huanhuanOrderRepository;
     private final OrderRepository aliOrderRepository;
     private final OrderRepository invoiceRepository;
